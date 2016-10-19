@@ -1,0 +1,41 @@
+---
+title: "British Election Survey"
+author: "Maja Založnik "
+date: "compiled `r Sys.time()`"
+output: html_document
+---
+
+British Election Survey Data for [waves 1 to 9](http://www.britishelectionstudy.com/data-object/british-election-study-combined-wave-1-9-internet-panel/)
+
+```{r setup}
+library(memisc)
+bregret.raw <- read.csv("data/BES2015_W9_Panel_v1.0/bregret.csv", nrows=10)
+test<- attributes(bregret.raw)
+grep("regrets", test$names)
+grep("euRef", test$names)
+test$names[grep("regrets", test$names)]
+test$names[3533]
+test$names[3535]
+test$names[26]
+
+stencil <- c(rep("NULL",3879))
+stencil[c(26,3531,3533, 3535)] <- NA
+bregret.raw <- read.csv("data/BES2015_W9_Panel_v1.0/bregret.csv", colClasses = stencil)
+
+
+test <- xtabs(wt_full_W9  ~ regretsIHaveAFewW9 + euRefVoteW9 , data = bregret.raw)[,1:2]
+remain <- 16141241
+leave <- 17410742
+
+prop <- apply(test, 2, function(x) x/sum(x))
+cert.rem <- (prop[1,1]+prop[3,1])*remain
+cert.leave <- (prop[1,2]+ prop[3,2])*leave
+new.rem <- prop[2,2]*leave
+new.leave <- prop[2,1]*remain
+
+cert.rem + new.rem 
+cert.leave + new.leave
+remain+leave
+
+prop
+```
