@@ -1,9 +1,10 @@
 ---
-title: "British Election Survey - Wave 9 - #Bregret"
+title: 'British Election Survey - Wave 9 - #Bregret'
 author: 'mz '
 output:
-  word_document: default
+  pdf_document: default
   html_document: default
+  word_document: default
 ---
 ```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
 options(scipen = 9, digits = 4)
@@ -16,7 +17,7 @@ library(tidyr)
 The results of [wave nine of the British Election Study](http://www.britishelectionstudy.com/data-object/british-election-study-combined-wave-1-9-internet-panel/) have just recently been released (6.10.2016), the survey having been conducted in the days immediately after the EU referendum (24.6. to 4.7.). Over 30,000 respondents were asked about how they voted, and also whether they had any regrets about it in the immediate aftermath of the results being announced.
 
 
-According to the survey, the proportion regretting their vote was significantly higher among leave voters (5.78 %) compared to remain voters (1.43 %).
+According to the [survey](https://github.com/majazaloznik/BrexitRegret), the proportion regretting their vote was significantly higher among leave voters (5.78 %) compared to remain voters (1.43 %).
 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
@@ -34,8 +35,8 @@ names(attributes(regrets)$dimnames) <- c( "Regrets", "Reported vote")
 colnames(regrets) <- c("Remain", "Leave", "Don't remember")
 rownames(regrets) <- c("Regrets - No", "Regrets - Yes", "Regrets - Not sure")
 regrets.prop <- apply(regrets, 2, function(x) x/sum(x))
-
-kable(regrets.prop*100, digits = 2, caption = "Table 1: Percentage regreting their vote in each EU referendum camp")
+N <- sum(xtabs(~ regretsIHaveAFewW9 + euRefVoteW9,data = bregret.raw))
+kable(regrets.prop*100, digits = 2, caption = paste("Table 1: Percentage regretting their vote in each EU referendum camp (N =", N  , ")"))
 ```
 
 Curiously regrets were even higher (6.29%) among the approximately 180 respondents who did not know how they had voted. But ignoring the latter, we can apply these (weighted) survey results to the actual referendum outcome: if these levels of regret are representative nationally and the referendum had been repeated only ten days or so later, what would the result have been? 
@@ -129,5 +130,6 @@ kable(comp, digits = 2, caption = "Table 5: Comparing regret levels with 2015 el
   #    referendum2016 = xtabs(wt_full_W9~ regretsIHaveAFewW9 , data = bregret.raw))
 
 # prop.test(c(pt[1,1], pt[1,2]), c(sum(pt[,1]), sum(pt[,2]))) 
+purl("scripts/Regret.Rmd", output = "scripts/Bregret.R")
 ```
 
